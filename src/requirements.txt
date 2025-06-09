@@ -1,0 +1,8 @@
+# Voice Processing Toolkit Requirements
+azure-cognitiveservices-speech>=1.28.0
+openai>=1.0.0
+python-dotenv>=1.0.0
+pydub>=0.25.1  # For audio conversion
+numpy>=1.20.0  # Common dependency
+requests>=2.27.0  # Used by personal voice creation
+azure-identity>=1.14.0  # For Azure OpenAI authentication
