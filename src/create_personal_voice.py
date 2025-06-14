@@ -328,14 +328,14 @@ def main():
     print("\nChecking audio file formats...")
     
     # Convert consent file if needed
-    converted_consent_file = convert_to_wav(args.consent)
+    converted_consent_file = convert_to_wav(args.consent)[1]
     
     # Convert sample files if needed
     converted_sample_files = []
     temp_files = []
     
     for sample_file in args.samples:
-        converted_file = convert_to_wav(sample_file)
+        converted_file = convert_to_wav(sample_file)[1]
         converted_sample_files.append(converted_file)
         # Keep track of temporary files for cleanup
         if converted_file != sample_file:
