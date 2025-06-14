@@ -121,9 +121,7 @@ def upload_consent(project_id, consent_id, consent_file_path, voice_talent_name,
         # If there's an operation ID, monitor it
         if operation_id:
             print(f"Operation ID: {operation_id}")
-            success, operation_result = monitor_operation(operation_id)
-            if success:
-                return True, operation_result
+            return monitor_operation(operation_id)
         
         return True, response_json
     else:
