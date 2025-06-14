@@ -20,7 +20,7 @@ import time
 from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
-from .audio_conversion import convert_to_wav, convert_files_to_wav
+from audio_conversion import convert_to_wav, convert_files_to_wav
 
 # Load environment variables from .env file
 env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
