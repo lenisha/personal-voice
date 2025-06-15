@@ -20,7 +20,7 @@ import time
 from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
-from .audio_conversion import convert_to_wav, convert_files_to_wav
+from audio_conversion import convert_to_wav, convert_files_to_wav
 
 # Load environment variables from .env file
 env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
@@ -121,9 +121,7 @@ def upload_consent(project_id, consent_id, consent_file_path, voice_talent_name,
         # If there's an operation ID, monitor it
         if operation_id:
             print(f"Operation ID: {operation_id}")
-            success, operation_result = monitor_operation(operation_id)
-            if success:
-                return True, operation_result
+            return monitor_operation(operation_id)
         
         return True, response_json
     else:
@@ -328,14 +326,14 @@ def main():
     print("\nChecking audio file formats...")
     
     # Convert consent file if needed
-    converted_consent_file = convert_to_wav(args.consent)
+    converted_consent_file = convert_to_wav(args.consent)[1]
     
     # Convert sample files if needed
     converted_sample_files = []
     temp_files = []
     
     for sample_file in args.samples:
-        converted_file = convert_to_wav(sample_file)
+        converted_file = convert_to_wav(sample_file)[1]
         converted_sample_files.append(converted_file)
         # Keep track of temporary files for cleanup
         if converted_file != sample_file:

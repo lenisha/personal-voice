@@ -7,8 +7,8 @@ This utility helps you create a personal voice using Azure AI Speech Services. I
 1. An Azure Speech resource with Personal Voice feature enabled
 2. Python 3.6+ with the following libraries:
    - `requests` for API communication
-   - `pydub` for audio conversion (optional, but recommended)
-   - Alternatively, FFmpeg installed on your system for audio conversion
+   - `pydub` for audio conversion
+   - FFmpeg installed on your system for use by pydub for audio conversion (on Windows, run `choco install ffmpeg`)
 3. Audio files:
    - One consent recording (clear statement giving consent to use your voice)
    - At least two sample audio recordings of your voice (clear, high-quality recordings)
