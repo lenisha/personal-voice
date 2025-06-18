@@ -66,13 +66,16 @@ def convert_to_wav(input_file, output_file=None, quiet=False):
     if file_extension == '.wav':
         return True, input_file
     
-    # Create output file path if not provided
+    # If output_file is not specified, create a name based on the input file
     if not output_file:
-        fd, output_file = tempfile.mkstemp(suffix='.wav')
-        os.close(fd)
+        # Extract the base filename without extension
+        base_name = os.path.splitext(os.path.basename(input_file))[0]
+        # Create output path with -converted.wav suffix in the same directory as input
+        output_file = os.path.join(os.path.dirname(input_file), f"{base_name}-converted.wav")
+    
     
     if not quiet:
-        print(f"Converting {os.path.basename(input_file)} to WAV format...")
+        print(f"Converting {os.path.basename(input_file)} to WAV format.. {output_file}.")
     
     # Try with pydub if available
     if PYDUB_AVAILABLE:

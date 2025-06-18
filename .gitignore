@@ -2,6 +2,8 @@
 .env
 audio/
 dock/
+*.wav
+*.m4a
 
 # Python related
 **/__pycache__/

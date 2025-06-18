@@ -6,3 +6,4 @@ pydub>=0.25.1  # For audio conversion
 numpy>=1.20.0  # Common dependency
 requests>=2.27.0  # Used by personal voice creation
 azure-identity>=1.14.0  # For Azure OpenAI authentication
+ffmpeg-python>=0.2.0  # For audio processing

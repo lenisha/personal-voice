@@ -76,7 +76,7 @@ def upload_consent(project_id, consent_id, consent_file_path, voice_talent_name,
     """
     Upload a consent audio file
     """
-    print(f"\n[2/4] Uploading consent for '{voice_talent_name}'...")
+    print(f"\n[2/4] Uploading consent for '{voice_talent_name}'... from file '{consent_file_path}'")
     
     url = f"https://{SPEECH_REGION}.api.cognitive.microsoft.com/customvoice/consents/{consent_id}?api-version={API_VERSION}"
     
@@ -112,9 +112,10 @@ def upload_consent(project_id, consent_id, consent_file_path, voice_talent_name,
         response_json = {}
         
         try:
-            response_json = response.json()
-            if 'id' in response_json:
-                operation_id = response_json.get('id')
+            ## check response header for operation location 'Operation-Id'
+            if 'Operation-Id' in response.headers:
+                operation_id = response.headers['Operation-Id']
+              
         except:
             pass
         
@@ -143,10 +144,12 @@ def monitor_operation(operation_id, max_attempts=10, delay=5):
     
     for attempt in range(max_attempts):
         response = requests.get(url, headers=headers)
-        
+        print(f"Attempt {attempt+1}/{max_attempts}... status code: {response.status_code}")
+
         if response.status_code == 200:
             operation_status = response.json()
             status = operation_status.get('status', '').lower()
+           
             
             if status == 'succeeded':
                 print(f"✓ Operation completed successfully")
@@ -309,6 +312,8 @@ def main():
     parser.add_argument("--project-id", help="Project ID (generated if not provided)")
     parser.add_argument("--consent-id", help="Consent ID (generated if not provided)")
     parser.add_argument("--voice-id", help="Voice ID (generated if not provided)")
+    parser.add_argument("--quiet", action="store_true", help="Suppress detailed output")
+    parser.add_argument("--delete-converted", action="store_true", help="Delete converted files after processing")
     
     args = parser.parse_args()
     
@@ -335,9 +340,7 @@ def main():
     for sample_file in args.samples:
         converted_file = convert_to_wav(sample_file)[1]
         converted_sample_files.append(converted_file)
-        # Keep track of temporary files for cleanup
-        if converted_file != sample_file:
-            temp_files.append(converted_file)
+
     
     # Create project
     project_success, project_details = create_project(project_id)
@@ -372,14 +375,15 @@ def main():
     # Display the details
     display_voice_details(voice_details if voice_details else final_details)
     
-    # Clean up any temporary files
-    for temp_file in temp_files:
-        try:
+    # Clean up temporary files if needed
+    if args.delete_converted:
+        print("\nCleaning up temporary files...")
+        for temp_file in [converted_consent_file] + converted_sample_files:
             if os.path.exists(temp_file):
                 os.remove(temp_file)
-        except Exception as e:
-            print(f"Warning: Could not remove temporary file {temp_file}: {e}")
-    
+                print(f"Deleted: {temp_file}")
+        print("✓ Converted  files deleted")
+
     print("\n✓ Personal Voice Creation Process Completed")
     print(f"Save your Speaker Profile ID for future use: {voice_details.get('speakerProfileId', 'N/A')}")
 

@@ -1,0 +1,17 @@
+# Azure Speech Services configuration
+AZURE_SPEECH_KEY=
+AZURE_SPEECH_REGION=
+
+
+
+# Azure OpenAI configuration
+AZURE_OPENAI_KEY=your_azure_openai_key_here
+AZURE_OPENAI_ENDPOINT=https://openai.azure.com/
+AZURE_OPENAI_DEPLOYMENT=your-deployment-name
+AZURE_OPENAI_API_VERSION=2023-05-15
+
+# Personal Speech configuration
+AZURE_SPEAKER_PROFILE_ID=
+PROJECT_ID=
+Consent_ID=
+# Add any other API keys or configuration values here

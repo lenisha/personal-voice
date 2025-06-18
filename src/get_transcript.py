@@ -18,7 +18,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import azure.cognitiveservices.speech as speechsdk
 # Import our audio conversion module
-from .audio_conversion import convert_to_wav
+from audio_conversion import convert_to_wav
 
 # Load environment variables from .env file
 env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')

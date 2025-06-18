@@ -25,7 +25,13 @@ if os.path.exists(env_path):
 # These should be set in .env file or system environment
 SPEECH_KEY = os.environ.get('AZURE_SPEECH_KEY')
 SPEECH_REGION = os.environ.get('AZURE_SPEECH_REGION')
-SPEAKER_PROFILE_ID = os.environ.get('AZURE_SPEAKER_PROFILE_ID',None)
+AZURE_SPEAKER_PROFILE_ID = os.environ.get('AZURE_SPEAKER_PROFILE_ID',None)
+
+print("Using Azure Speech Service with the following configuration:")
+print(f"  Speech Region: {'***' if SPEECH_REGION else 'Not set'}")
+# Print speaker profile ID if available
+if AZURE_SPEAKER_PROFILE_ID:
+    print(f"  Speaker Profile ID: {'***' if AZURE_SPEAKER_PROFILE_ID else 'Not set'}")
 
 # Check if credentials are available
 if not SPEECH_KEY or not SPEECH_REGION:
@@ -184,13 +190,13 @@ if __name__ == "__main__":
                 reduce_pauses=args.reduce_pauses
             )
 
-    elif SPEAKER_PROFILE_ID and not args.voice:
+    elif AZURE_SPEAKER_PROFILE_ID:
         # Example 3: Using personal voice (you need to provide speaker_profile_id)
         # To get a speaker profile ID, follow the steps in:
         # https://learn.microsoft.com/en-us/azure/ai-services/speech-service/personal-voice-create-voice
         
         # Uncomment and replace with your speaker profile ID to use personal voice
-        speaker_profile_id = SPEAKER_PROFILE_ID
+        speaker_profile_id = AZURE_SPEAKER_PROFILE_ID
        
         
         # Option 1: Standard personal voice synthesis
@@ -217,6 +223,7 @@ if __name__ == "__main__":
                                         rate="1.2",
                                         reduce_pauses=True)
     else:
+        voice_id = 'en-US-JennyNeural'
         # Use standard voice
         speech_config = speechsdk.SpeechConfig(subscription=SPEECH_KEY, region=SPEECH_REGION)
         speech_config.speech_synthesis_voice_name = args.voice
