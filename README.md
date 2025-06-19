@@ -166,13 +166,40 @@ will generate few files with various rates and pauses with the personal voice in
 --output <output file name>
 ```
 
-
-
-SSMLexample in code could be updates
-- `DragonLatestNeural` provides superior voice cloning similarity
-- `PhoenixLatestNeural` offers more accurate pronunciation with lower latency
-
 ## Improving Transcripts with OpenAI
+
+You can use the `src/improve_trancript.py` script to enhance the accuracy and readability of your transcripts using OpenAI's language models.
+
+#### Prerequisites
+
+- An OpenAI API key set as the `AZURE_OPENAI_KEY`, `AZURE_OPENAI_ENDPOINT` and `AZURE_OPENAI_DEPLOYMENT` environment variable or in your `src/.env` file.
+- The transcript file you want to improve (plain text format recommended).
+
+#### Usage
+
+Basic usage:
+
+```bash
+python src/improve_trancript.py --input /path/to/transcript.txt --output /path/to/improved_transcript.txt
+```
+
+Optional parameters:
+
+- `--model <model_name>`: Specify the OpenAI model (default: `gpt-3.5-turbo`).
+- `--formality <formality_level>`: Set the formality level of the output (default: `formal`, options: `casual`, `neutral`).
+
+
+Example with all parameters:
+
+```bash
+python src/improve_trancript.py \
+    --input transcript.txt \
+    --output improved_transcript.txt \
+    --model gpt-4o 
+```
+
+The improved transcript will be saved to the specified output file.
+
 
 ## References
 
