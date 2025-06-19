@@ -29,7 +29,9 @@ The script will automatically convert your audio files to the required format (1
 1. If `pydub` is installed, it will be used for the conversion
 2. If `pydub` fails or isn't available, FFmpeg will be used as a fallback
 3. If neither is available, the script will provide installation instructions
-4. Ensure you have FFmpeg installed (e.g., using Chocolatey: `choco install ffmpeg` , `apt install ffmpeg` on Linux, or download from [FFmpeg's official site](https://ffmpeg.org/download.html))
+4. Ensure you have FFmpeg installed 
+  - Windows: `choco install ffmpeg` or follow https://www.geeksforgeeks.org/installation-guide/how-to-install-ffmpeg-on-windows/
+  - Linux:  `sudo apt install ffmpeg` on Linux, or download from [FFmpeg's official site](https://ffmpeg.org/download.html))
 
 ## Consent Statement
 
@@ -38,6 +40,7 @@ For the consent recording, you should record yourself clearly saying:
 ```
 I [state your name], am aware that [state company name] will use recordings of my voice to create and use a synthetic version of my voice.
 ```
+
 ## Create an Azure Speech Service
 Currently EastUS and WestEurope regions support Personal Voice.
 
@@ -54,7 +57,7 @@ pip install -r src/requirements.txt
 
 ```bash
 # Basic usage
-python src/create_personal_voice.py --consent /path/to/consent.wav --samples /path/to/sample1.wav /path/to/sample2.wav --name "Your Name"
+python src/create_personal_voice.py --consent /path/to/consent.wav --samples /path/to/sample1.wav /path/to/sample2.wav --name "Your Name" --company "Your Company"
 ```
 
 - Advanced usage with all parameters
@@ -72,7 +75,7 @@ python create_personal_voice.py \
 ### My Example
 
 ```bash
-python create_personal_voice.py --consent voice/consent2.wav --samples voice/sample3.wav voice/sample4.wav --name "Elena Neroslavskaya"
+python src\create_personal_voice.py --consent consent2.m4a --samples sample.m4a sample2.m4a --name "Elena Neroslavskaya" --company "Microsoft"
 ```
 
 - You will see similar output:
@@ -135,14 +138,37 @@ Save your Speaker Profile ID for future use: 160faee9-0bc5-4221-8463-xxxxxxx
 
 ## Using Your Personal Voice to Synthesize Speech
 
-Once your personal voice is created, you'll receive a Speaker Profile ID that you can use in your text-to-speech applications with the Azure Speech Service.
+Once your personal voice is created, you'll receive a Speaker Profile ID that you can use in your text-to-speech as shown below 
 
-To use it with the existing `text_to_speech.py` script:
+- set `AZURE_SPEAKER_PROFILE_ID` environment variable in your `src/.env` file or pass it as a parameter in the script
+- place your text in the script file (by default it will use sample_text.txt)
+- run the script:
 
-```python
+```bash 
+python src/text_to_speech.py 
+```
+will generate a file `audio/personal__output.wav` with the synthesized speech in your personal voice.
 
+- another example of using personal voice parameters
+
+```bash
+python src/text_to_speech.py --input <path to test file>  --peronsl-voice "<speaker id>" --variants
+```
+will generate few files with various rates and pauses with the personal voice in audio folder.
+
+- Possible variants of personal voice parameters:
+```bash
+--variants <true/false> to generte multiple variants of the personal voice
+--rate <rate value>
+--reduce-pauses <true/false>
+--input <path to text file>
+--personal-voice "<speaker id>"
+--output <output file name>
 ```
 
+
+
+SSMLexample in code could be updates
 - `DragonLatestNeural` provides superior voice cloning similarity
 - `PhoenixLatestNeural` offers more accurate pronunciation with lower latency
 

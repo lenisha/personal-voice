@@ -12,6 +12,6 @@ AZURE_OPENAI_API_VERSION=2023-05-15
 
 # Personal Speech configuration
 AZURE_SPEAKER_PROFILE_ID=
-PROJECT_ID=
-Consent_ID=
+AZURE_PROJECT_ID=
+AZURE_CONSET_ID=
 # Add any other API keys or configuration values here

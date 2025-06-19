@@ -41,7 +41,7 @@ if not SPEECH_KEY or not SPEECH_REGION:
     if not SPEECH_REGION:
         SPEECH_REGION = "eastus"
 
-def text_to_speech_basic(text, output_filename="output.wav"):
+def text_to_speech_basic(text, output_filename="output.wav", voice_name="en-US-JennyNeural"):
     """
     Convert text to speech using a standard voice
     """
@@ -49,7 +49,7 @@ def text_to_speech_basic(text, output_filename="output.wav"):
     speech_config = speechsdk.SpeechConfig(subscription=SPEECH_KEY, region=SPEECH_REGION)
     
     # Set the voice name
-    speech_config.speech_synthesis_voice_name = "en-US-JennyNeural"
+    speech_config.speech_synthesis_voice_name = voice_name
     
     # Configure audio output
     audio_config = speechsdk.audio.AudioOutputConfig(filename=output_filename)
@@ -154,12 +154,13 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Convert text to speech using Azure AI Speech Service")
     parser.add_argument("--input", help="Path to text file to convert to speech (optional)")
-    parser.add_argument("--output", default="output.wav", help="Path to save the audio output (default: output.wav)")
+    parser.add_argument("--output", default="audio/personal_output.wav", help="Path to save the audio output (default: output.wav)")
     parser.add_argument("--voice", default="en-US-JennyNeural", help="Voice to use (default: en-US-JennyNeural)")
     parser.add_argument("--personal-voice", help="Speaker profile ID for personal voice (optional)")
     parser.add_argument("--rate", default="1.0", help="Speaking rate (default: 1.0)")
     parser.add_argument("--reduce-pauses", action="store_true", help="Reduce pauses between sentences")
-    
+    parser.add_argument("--variants", action="store_true", help="Use variants for personal voice synthesis (optional)")
+
     args = parser.parse_args()
     
     # Read from input file if provided, otherwise use sample text
@@ -169,75 +170,68 @@ if __name__ == "__main__":
         if not text_to_convert:
             print(f"Error reading input file: {args.input}")
             sys.exit(1)
-
+        print(f"Using input file: {args.input}")    
     else:  
-        # Example 1: Basic text-to-speech with standard voice
-        text_to_speech_basic("Hello, this is a test of the Azure AI Speech Service.", "audio/standard_voice_output.wav")
-
-        # Example 2: Read from sample file and convert to speech
+          # Example 2: Read from sample file and convert to speech
         text_to_convert = read_sample_text("sample_text.txt")
-        if text_to_convert:
-            text_to_speech_basic(text_to_convert, "audio/sample_text_output.wav")  
+        print(f"Using sample text: {text_to_convert[:50]}...")  # Print first 50 characters for brevity
 
 
-    if args.personal_voice:
+    personal_voice_id = args.personal_voice if args.personal_voice else AZURE_SPEAKER_PROFILE_ID
+    # If personal voice ID is provided, use it for synthesis
+    if personal_voice_id:
+        print(f"Using personal voice with ID: {personal_voice_id}")
+        if not args.variants:
             # Use personal voice
+            print(f"Using standard personal voice synthesis without variants. rate {args.rate} and reduce pauses {args.reduce_pauses} can be adjusted.")
             personal_voice_text_to_speech(
                 text_to_convert, 
-                args.personal_voice, 
+                personal_voice_id, 
                 args.output,
                 rate=args.rate,
                 reduce_pauses=args.reduce_pauses
             )
-
-    elif AZURE_SPEAKER_PROFILE_ID:
-        # Example 3: Using personal voice (you need to provide speaker_profile_id)
-        # To get a speaker profile ID, follow the steps in:
-        # https://learn.microsoft.com/en-us/azure/ai-services/speech-service/personal-voice-create-voice
-        
-        # Uncomment and replace with your speaker profile ID to use personal voice
-        speaker_profile_id = AZURE_SPEAKER_PROFILE_ID
-       
-        
-        # Option 1: Standard personal voice synthesis
-        personal_voice_text_to_speech(text_to_convert, 
-                                        speaker_profile_id, 
-                                        "audio/personal_voice_output.wav")
-        
-        # Option 2: Faster speech rate (20% faster)
-        personal_voice_text_to_speech(text_to_convert,
-                                        speaker_profile_id,
-                                        "audio/personal_voice_faster.wav",
-                                        rate="1.2")
-                                        
-        # Option 3: Reduced pauses between sentences
-        personal_voice_text_to_speech(text_to_convert,
-                                        speaker_profile_id,
-                                        "audio/personal_voice_fewer_pauses.wav",
-                                        reduce_pauses=True)
-                                        
-        # Option 4: Both faster and reduced pauses
-        personal_voice_text_to_speech(text_to_convert,
-                                        speaker_profile_id,
-                                        "audio/personal_voice_faster_fewer_pauses.wav",
-                                        rate="1.2",
-                                        reduce_pauses=True)
-    else:
-        voice_id = 'en-US-JennyNeural'
-        # Use standard voice
-        speech_config = speechsdk.SpeechConfig(subscription=SPEECH_KEY, region=SPEECH_REGION)
-        speech_config.speech_synthesis_voice_name = args.voice
-        
-        audio_config = speechsdk.audio.AudioOutputConfig(filename=args.output)
-        synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
-        
-        result = synthesizer.speak_text_async(text_to_convert).get()
-        
-        if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
-            print(f"Speech synthesized and saved to [{args.output}]")
         else:
-            print(f"Speech synthesis failed: {result.reason}")
-            if result.reason == speechsdk.ResultReason.Canceled:
-                cancellation_details = result.cancellation_details
-                print(f"Error details: {cancellation_details.error_details}")
+            # Use personal voice with variants
+            # Note: Variants are not supported in the current version of the SDK, 
+            # so this is a placeholder for future implementation.
+            print("Using variants for personal voice synthesis is not yet implemented in this SDK version.")
+            # Example 3: Using personal voice (you need to provide speaker_profile_id)
+            # To get a speaker profile ID, follow the steps in:
+            # https://learn.microsoft.com/en-us/azure/ai-services/speech-service/personal-voice-create-voice
+            
+                       
+            # Option 1: Standard personal voice synthesis
+            personal_voice_text_to_speech(text_to_convert, 
+                                            personal_voice_id, 
+                                            "audio/personal_voice_output.wav")
+            
+            # Option 2: Faster speech rate (20% faster)
+            personal_voice_text_to_speech(text_to_convert,
+                                            personal_voice_id,
+                                            "audio/personal_voice_faster.wav",
+                                            rate="1.2")
+                                            
+            # Option 3: Reduced pauses between sentences
+            personal_voice_text_to_speech(text_to_convert,
+                                            personal_voice_id,
+                                            "audio/personal_voice_fewer_pauses.wav",
+                                            reduce_pauses=True)
+                                            
+            # Option 4: Both faster and reduced pauses
+            personal_voice_text_to_speech(text_to_convert,
+                                            personal_voice_id,
+                                            "audio/personal_voice_faster_fewer_pauses.wav",
+                                            rate="1.2",
+                                            reduce_pauses=True)
+    else:
+        print("No personal voice ID provided. Using standard voice synthesis.")
+        # Example 1: Basic text-to-speech with standard voice
+        text_to_speech_basic(text_to_convert, 
+                             output_filename="audio/standard_voice_output.wav",
+                             voice_name=args.voice)
+
+     
+
+  
     
