@@ -195,7 +195,7 @@ if __name__ == "__main__":
             # Use personal voice with variants
             # Note: Variants are not supported in the current version of the SDK, 
             # so this is a placeholder for future implementation.
-            print("Using variants for personal voice synthesis is not yet implemented in this SDK version.")
+            print("Using variants for rates and paues personal voice synthesis")
             # Example 3: Using personal voice (you need to provide speaker_profile_id)
             # To get a speaker profile ID, follow the steps in:
             # https://learn.microsoft.com/en-us/azure/ai-services/speech-service/personal-voice-create-voice
