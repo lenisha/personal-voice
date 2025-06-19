@@ -4,6 +4,9 @@ audio/
 dock/
 *.wav
 *.m4a
+*.txt
+start_sim.sh
+
 
 # Python related
 **/__pycache__/
