@@ -156,6 +156,10 @@ def monitor_operation(operation_id, max_attempts=10, delay=5):
                 return True, operation_status
             elif status in ['failed', 'canceled']:
                 print(f"✗ Operation failed: {status}")
+                # print full response for debugging
+                print(f"Details", json.dumps(response.json(), indent=2))
+                print(f"Headers", json.dumps(response.headers, indent=2))
+
                 return False, operation_status
             else:
                 print(f"Operation in progress: {status} (attempt {attempt+1}/{max_attempts})")
